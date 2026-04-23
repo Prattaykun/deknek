@@ -2,7 +2,7 @@
 
 import { useEffect, useMemo, useState } from "react";
 import { motion } from "framer-motion";
-import { CheckCircle2, Loader2, LogOut, ShieldCheck, Sparkles, UserRound } from "lucide-react";
+import { CheckCircle2, Clock3, Loader2, LogOut, RefreshCw, ShieldCheck, Sparkles, UserRound } from "lucide-react";
 
 import { Alert, AlertDescription, AlertTitle } from "@/components/ui/alert";
 import { Badge } from "@/components/ui/badge";
@@ -34,6 +34,7 @@ const initialAuthState: AuthState = {
 
 const API_BASE_URL = process.env.NEXT_PUBLIC_API_BASE_URL ?? "http://localhost:8000";
 const TOKEN_KEY = "internship_portal_token";
+const FIRST_VISIT_NOTICE_KEY = "internship_portal_first_visit_notice_seen";
 
 export default function PortalApp() {
   const [activeTab, setActiveTab] = useState("login");
@@ -44,6 +45,8 @@ export default function PortalApp() {
   const [loadingUser, setLoadingUser] = useState(false);
   const [submitting, setSubmitting] = useState(false);
   const [error, setError] = useState<string | null>(null);
+  const [showWakeUpNotice, setShowWakeUpNotice] = useState(false);
+  const [secondsUntilReload, setSecondsUntilReload] = useState(60);
 
   const loggedIn = useMemo(() => Boolean(token && currentUser), [token, currentUser]);
 
@@ -55,6 +58,28 @@ export default function PortalApp() {
 
     void fetchCurrentUser(storedToken);
   }, []);
+
+  useEffect(() => {
+    const alreadyShown = window.localStorage.getItem(FIRST_VISIT_NOTICE_KEY);
+    if (alreadyShown) {
+      return;
+    }
+
+    setShowWakeUpNotice(true);
+    window.localStorage.setItem(FIRST_VISIT_NOTICE_KEY, "true");
+  }, []);
+
+  useEffect(() => {
+    if (!showWakeUpNotice || secondsUntilReload <= 0) {
+      return;
+    }
+
+    const timer = window.setInterval(() => {
+      setSecondsUntilReload((previous) => Math.max(previous - 1, 0));
+    }, 1000);
+
+    return () => window.clearInterval(timer);
+  }, [showWakeUpNotice, secondsUntilReload]);
 
   async function fetchCurrentUser(authToken: string) {
     try {
@@ -177,6 +202,52 @@ export default function PortalApp() {
           transition={{ duration: 0.6 }}
           className="space-y-6"
         >
+          {showWakeUpNotice && (
+            <motion.div
+              initial={{ opacity: 0, y: -8 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{ duration: 0.35 }}
+              className="rounded-2xl border border-[var(--amber-300)] bg-[linear-gradient(135deg,#fff7e8_0%,#ffe8be_100%)] p-4 shadow-sm"
+            >
+              <div className="flex items-start gap-3">
+                <div className="mt-0.5 inline-flex h-9 w-9 shrink-0 items-center justify-center rounded-lg bg-white text-[var(--amber-900)]">
+                  <Clock3 className="h-5 w-5" />
+                </div>
+                <div className="flex-1 space-y-2">
+                  <p className="text-sm font-semibold text-[var(--amber-900)]">Backend Warm-up Notice</p>
+                  <p className="text-sm text-[var(--amber-900)]/90">
+                    First visit may be slow because the Render backend can sleep when idle. If login/signup does not respond,
+                    wait 1 minute and reload this page.
+                  </p>
+                  <div className="flex flex-wrap items-center gap-2">
+                    <span className="rounded-md bg-white px-2.5 py-1 text-xs font-medium text-[var(--amber-900)]">
+                      Reload in about {secondsUntilReload}s
+                    </span>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="outline"
+                      className="border-[var(--amber-300)] bg-white text-[var(--amber-900)] hover:bg-[var(--amber-50)]"
+                      onClick={() => window.location.reload()}
+                    >
+                      <RefreshCw className="h-4 w-4" />
+                      Reload now
+                    </Button>
+                    <Button
+                      type="button"
+                      size="sm"
+                      variant="ghost"
+                      className="text-[var(--amber-900)] hover:bg-white/60"
+                      onClick={() => setShowWakeUpNotice(false)}
+                    >
+                      Dismiss
+                    </Button>
+                  </div>
+                </div>
+              </div>
+            </motion.div>
+          )}
+
           <Badge className="w-fit" variant="secondary">
             Internship Assignment Portal
           </Badge>
