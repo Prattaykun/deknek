@@ -1,0 +1,19 @@
+services:
+  - type: web
+    name: deknek-backend
+    env: python
+    rootDir: backend
+    plan: free
+    buildCommand: pip install -r requirements.txt
+    startCommand: uvicorn app.main:app --host 0.0.0.0 --port $PORT
+    envVars:
+      - key: PYTHON_VERSION
+        value: 3.12.10
+      - key: MONGODB_TLS_DISABLE_OCSP_ENDPOINT_CHECK
+        value: "true"
+      - key: DATABASE_NAME
+        value: internship_portal
+      - key: JWT_ALGORITHM
+        value: HS256
+      - key: ACCESS_TOKEN_EXPIRE_MINUTES
+        value: "60"
