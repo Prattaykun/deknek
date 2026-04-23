@@ -1,0 +1,87 @@
+@import "tailwindcss";
+
+:root {
+  --background: #f6f8fb;
+  --foreground: #102031;
+  --page-bg: #f3f7fb;
+  --brand-100: #c3f0e8;
+  --brand-500: #12b886;
+  --brand-600: #0f9e73;
+  --brand-700: #0c7f5d;
+  --amber-50: #fff7e8;
+  --amber-300: #f9c97d;
+  --amber-900: #5e3b04;
+  --slate-100: #e8eef6;
+  --slate-200: #d7e0eb;
+  --slate-300: #bfccd9;
+  --slate-500: #5a6f84;
+  --slate-600: #4b5f73;
+  --slate-700: #334659;
+  --slate-900: #0f2235;
+}
+
+@theme inline {
+  --color-background: var(--background);
+  --color-foreground: var(--foreground);
+  --font-sans: var(--font-manrope);
+  --font-mono: var(--font-space-grotesk);
+}
+
+body {
+  background: radial-gradient(circle at 8% 4%, #fff9ec 0%, transparent 45%),
+    radial-gradient(circle at 90% 12%, #ddf7f0 0%, transparent 42%),
+    radial-gradient(circle at 50% 85%, #dff0ff 0%, transparent 48%),
+    var(--background);
+  color: var(--foreground);
+  font-family: var(--font-manrope), sans-serif;
+}
+
+h1,
+h2,
+h3 {
+  font-family: var(--font-space-grotesk), sans-serif;
+}
+
+.orb {
+  position: absolute;
+  border-radius: 9999px;
+  filter: blur(18px);
+  opacity: 0.4;
+  animation: orbFloat 10s ease-in-out infinite;
+}
+
+.orb-a {
+  width: 340px;
+  height: 340px;
+  top: -80px;
+  right: -70px;
+  background: #8be5cf;
+}
+
+.orb-b {
+  width: 260px;
+  height: 260px;
+  bottom: 12%;
+  left: -80px;
+  animation-delay: 1.2s;
+  background: #ffd89a;
+}
+
+.orb-c {
+  width: 200px;
+  height: 200px;
+  top: 52%;
+  right: 22%;
+  animation-delay: 2.2s;
+  background: #9fd1ff;
+}
+
+@keyframes orbFloat {
+  0%,
+  100% {
+    transform: translateY(0) translateX(0) scale(1);
+  }
+  50% {
+    transform: translateY(-14px) translateX(10px) scale(1.04);
+  }
+}
