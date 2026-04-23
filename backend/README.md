@@ -27,3 +27,4 @@ uvicorn app.main:app --reload --port 8000
 
 - On startup, backend connects to MongoDB and ensures a unique email index.
 - CORS origin is controlled by `FRONTEND_ORIGIN` in `.env`.
+- `MONGODB_TLS_DISABLE_OCSP_ENDPOINT_CHECK=true` can help avoid TLS OCSP endpoint issues in hosted environments.

@@ -6,6 +6,7 @@ class Settings(BaseSettings):
 
     mongodb_url: str
     database_name: str = "internship_portal"
+    mongodb_tls_disable_ocsp_endpoint_check: bool = True
 
     jwt_secret_key: str
     jwt_algorithm: str = "HS256"

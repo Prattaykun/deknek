@@ -14,6 +14,7 @@ async def connect_to_mongo() -> None:
             settings.mongodb_url,
             tls=True,
             tlsCAFile=certifi.where(),
+            tlsDisableOCSPEndpointCheck=settings.mongodb_tls_disable_ocsp_endpoint_check,
             maxPoolSize=50,
             minPoolSize=5,
             maxIdleTimeMS=300000,
